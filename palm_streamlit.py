@@ -3,8 +3,6 @@ from neo4j import GraphDatabase
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
-# URI = "neo4j+s://21769e3d.databases.neo4j.io"
-# AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
 URI = config["URI"]
 AUTH = (config["USERNAME"], config["PASSWORD"])
 driver = GraphDatabase.driver(URI, auth=AUTH)
