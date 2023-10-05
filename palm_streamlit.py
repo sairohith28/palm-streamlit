@@ -1,8 +1,8 @@
 import google.generativeai as palm
 from neo4j import GraphDatabase
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
 
-config = dotenv_values(".env")
+# config = dotenv_values(".env")
 URI = "neo4j+ssc://21769e3d.databases.neo4j.io"
 AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
 driver = GraphDatabase.driver(URI, auth=AUTH)
