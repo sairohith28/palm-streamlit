@@ -3,11 +3,11 @@ from neo4j import GraphDatabase
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
-URI = config["URI"]
-AUTH = (config["USERNAME"], config["PASSWORD"])
+URI = "neo4j+ssc://21769e3d.databases.neo4j.io"
+AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
 driver = GraphDatabase.driver(URI, auth=AUTH)
 
-palm.configure(api_key=config["PALM_API_KEY"])
+palm.configure(api_key="AIzaSyAM66Voz__ZZo43m-6pThWp1IeFcasF1vo")
 
 def get_answer(input):
     defaults = {
