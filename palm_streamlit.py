@@ -1,8 +1,12 @@
 import google.generativeai as palm
 from neo4j import GraphDatabase
-# from dotenv import dotenv_values
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# config = dotenv_values(".env")
+# URI = "neo4j+s://21769e3d.databases.neo4j.io"
+# AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
 URI = "neo4j+ssc://21769e3d.databases.neo4j.io"
 AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
 driver = GraphDatabase.driver(URI, auth=AUTH)
@@ -127,6 +131,82 @@ user_question = st.text_input("Ask a question:")
 
 #     st.write("Query Results:")
 #     st.write(results)
+
+
+
+
+
+# import plotly.express as px
+
+# # ... (previous imports and code) ...
+
+# # Load CSS to prevent page refresh on dropdown selection
+# st.markdown(
+#     """
+#     <style>
+#     .no-refresh-dropdown > div[role="button"] {
+#         pointer-events: none;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+# if st.button("Generate"):
+#     # Generate Cypher query based on user question
+#     cypher_query = get_answer(user_question)
+
+#     # Execute Cypher query and get results from Neo4j
+#     results = execute_cypher_query(cypher_query)
+
+#     # Display generated Cypher query
+#     st.write("Generated Cypher Query:")
+#     st.code(cypher_query)
+
+#     # Display query results as table
+#     st.write("Query Results (as Table):")
+#     if results:
+#         df = pd.DataFrame(results)
+#         st.write(df)
+
+#         if len(df.columns) == 3:
+#             st.write("Displaying as 2 graphs:")
+
+#             # Determine the numerical column
+#             numerical_column = df.select_dtypes(include='number').columns[0]
+
+#             # Plot first graph
+#             st.write(f"Graph with {df.columns[0]} on x-axis and {numerical_column} on y-axis:")
+#             fig1 = px.bar(df, x=df.columns[0], y=numerical_column, labels={'x': df.columns[0], 'y': numerical_column})
+#             st.plotly_chart(fig1)
+
+#             # Plot second graph
+#             st.write(f"Graph with {df.columns[1]} on x-axis and {numerical_column} on y-axis:")
+#             fig2 = px.bar(df, x=df.columns[1], y=numerical_column, labels={'x': df.columns[1], 'y': numerical_column})
+#             st.plotly_chart(fig2)
+#         elif len(df.columns) == 2:
+#             st.write("Displaying as 1 graph:")
+
+#             # Determine the numerical column
+#             numerical_column = df.select_dtypes(include='number').columns[0]
+
+#             # Plot graph
+#             st.write(f"Graph with {df.columns[0]} on x-axis and {numerical_column} on y-axis:")
+#             fig = px.bar(df, x=df.columns[0], y=numerical_column, labels={'x': df.columns[0], 'y': numerical_column})
+#             st.plotly_chart(fig)
+#         else:
+#             st.write("Insufficient data for visualization.")
+#     else:
+#         st.write("No results found.")
+
+
+
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# ... (previous imports and code) ...
+
 if st.button("Generate"):
     # Generate Cypher query based on user question
     cypher_query = get_answer(user_question)
@@ -134,18 +214,74 @@ if st.button("Generate"):
     # Execute Cypher query and get results from Neo4j
     results = execute_cypher_query(cypher_query)
 
-    # Display results
+    # Display generated Cypher query
     st.write("Generated Cypher Query:")
     st.code(cypher_query)
 
-    st.write("Query Results:")
-
-    # Check if there are results to display
+    # Display query results as table
+    st.write("Query Results (as Table):")
     if results:
-        # Convert results to a list of dictionaries for displaying in a table
-        data = [dict(row) for row in results]
+        df = pd.DataFrame(results)
+        st.write(df)
 
-        # Display results in a table
-        st.table(data)
+        numerical_column = None
+        if len(df.columns) > 1:
+            numerical_column = df.select_dtypes(include='number').columns[0]
+
+        if numerical_column:
+            # # Bar Chart
+            # st.write("## Bar Chart")
+            # st.write(f"A bar chart provides a clear comparison of different categories.")
+            # st.write(f"In this chart, {df.columns[0]} '{df[df[numerical_column] == df[numerical_column].max()][df.columns[0]].values[0]}' has the highest {numerical_column}.")
+            # st.write(f"The lowest {numerical_column} is for '{df[df[numerical_column] == df[numerical_column].min()][df.columns[0]].values[0]}'.")
+
+            fig_bar = px.bar(df, x=df.columns[0], y=numerical_column, labels={'x': df.columns[0], 'y': numerical_column})
+            
+            # Pie Chart
+            # st.write("## Pie Chart")
+            # st.write("A pie chart shows the proportion of each category relative to the whole.")
+            # st.write("Here's the distribution of each category as a percentage of the whole.")
+
+            fig_pie = px.pie(df, names=df.columns[0], values=numerical_column, title=f"{numerical_column} by {df.columns[0]}", 
+                             hole=0.3)
+            fig_pie.update_traces(textinfo='percent+label')
+
+            # Line Chart
+            # st.write("## Line Chart")
+            # st.write(f"A line chart helps visualize trends or patterns over a continuous range.")
+            # st.write(f"In this chart, we can observe how {numerical_column} varies with {df.columns[0]}.")
+            # st.write("The trend shows the overall movement of the data.")
+
+            fig_line = px.line(df, x=df.columns[0], y=numerical_column, labels={'x': df.columns[0], 'y': numerical_column})
+            
+            # # Scatter Plot
+            # st.write("## Scatter Plot")
+            # st.write("A scatter plot helps to identify relationships or correlations between variables.")
+            # st.write(f"In this scatter plot, we can explore the relationship between {df.columns[0]} and {numerical_column}.")
+            # st.write("The scatter pattern gives an idea of the relationship, if any.")
+
+            fig_scatter = px.scatter(df, x=df.columns[0], y=numerical_column, labels={'x': df.columns[0], 'y': numerical_column})
+
+            # # Histogram
+            # st.write("## Histogram")
+            # st.write("A histogram displays the distribution of a single variable.")
+            # st.write(f"In this histogram, we can analyze the distribution of {df.columns[0]}.")
+            # st.write("The shape of the histogram indicates how the data is distributed.")
+
+            # fig_hist = px.histogram(df, x=df.columns[0], labels={'x': df.columns[0], 'y': 'Count'})
+
+            # Display graphs in two columns
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_bar)
+            col1.plotly_chart(fig_line)
+
+            col2.plotly_chart(fig_pie)
+            col2.plotly_chart(fig_scatter)
+
+            # # Display histogram separately
+            # st.plotly_chart(fig_hist)
+
+        else:
+            st.write("Insufficient data for visualization.")
     else:
         st.write("No results found.")
