@@ -1,9 +1,6 @@
 import google.generativeai as palm
 from neo4j import GraphDatabase
-import matplotlib.pyplot as plt
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # URI = "neo4j+s://21769e3d.databases.neo4j.io"
 # AUTH = ("neo4j", "sNLsVe6joJjNuRTNjOZRCoVJRSeNAMmAT1zr4-fiA_g")
